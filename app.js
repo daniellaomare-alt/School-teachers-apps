@@ -31,12 +31,13 @@ import {
 //    Replace all values with your own from Firebase Console
 //    → Project Settings → Your apps → SDK setup
 const firebaseConfig = {
-  apiKey:            "YOUR_API_KEY",
-  authDomain:        "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId:         "YOUR_PROJECT_ID",
-  storageBucket:     "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId:             "YOUR_APP_ID"
+  apiKey: "AIzaSyAYYWDvA6oW1koM2UAWEP6LvwmjOdFCGv0",
+  authDomain: "school-teacher-app-f40e1.firebaseapp.com",
+  projectId: "school-teacher-app-f40e1",
+  storageBucket: "school-teacher-app-f40e1.firebasestorage.app",
+  messagingSenderId: "848550061471",
+  appId: "1:848550061471:web:2ad245cc486e9c50bec9aa"
+};
 };
 
 // ── 3. Initialize Firebase services ─────────────────────────
