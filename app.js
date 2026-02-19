@@ -1,40 +1,61 @@
-// ============================================================
-// app.js
-// Firebase Authentication + Firestore for Teacher Portal
-// ============================================================
-
-// ── 1. Import only the Firebase pieces we need ──────────────
-import { initializeApp }
-  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-
-import {
-  getAuth,
-  signInWithEmailAndPassword,
-  signOut,
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  onSnapshot,
-  doc,
-  updateDoc,
-  arrayUnion,
-  query,
-  orderBy
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-
-// ── 2. Your Firebase project config ─────────────────────────
-//    Replace all values with your own from Firebase Console
-//    → Project Settings → Your apps → SDK setup
+// ==================== Firebase Config ====================
 const firebaseConfig = {
   apiKey: "AIzaSyAYYWDvA6oW1koM2UAWEP6LvwmjOdFCGv0",
   authDomain: "school-teacher-app-f40e1.firebaseapp.com",
   projectId: "school-teacher-app-f40e1",
   storageBucket: "school-teacher-app-f40e1.firebasestorage.app",
+  messagingSenderId: "848550061471",
+  appId: "1:848550061471:web:2ad245cc486e9c50bec9aa"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+
+// ==================== Elements ====================
+const loginForm = document.getElementById("loginForm");
+const emailInput = document.getElementById("email");
+const passInput = document.getElementById("password");
+const loginMessage = document.getElementById("loginMsg");
+const dashboard = document.getElementById("dashboard");
+const logoutBtn = document.getElementById("logoutBtn");
+
+// ==================== Login ====================
+loginForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const email = emailInput.value.trim();
+  const password = passInput.value;
+
+  if (!email || !password) {
+    loginMessage.innerText = "Please fill in both fields.";
+    return;
+  }
+
+  try {
+    await auth.signInWithEmailAndPassword(email, password);
+    loginMessage.innerText = ""; // clear errors
+  } catch (err) {
+    console.error("Login error:", err.code);
+    loginMessage.innerText = err.message;
+  }
+});
+
+// ==================== Auth State Listener ====================
+auth.onAuthStateChanged((user) => {
+  if (user) {
+    loginForm.parentElement.style.display = "none";
+    dashboard.style.display = "block";
+  } else {
+    loginForm.parentElement.style.display = "block";
+    dashboard.style.display = "none";
+  }
+});
+
+// ==================== Logout ====================
+logoutBtn.addEventListener("click", () => {
+  auth.signOut();
+});  storageBucket: "school-teacher-app-f40e1.firebasestorage.app",
   messagingSenderId: "848550061471",
   appId: "1:848550061471:web:2ad245cc486e9c50bec9aa"
 };
