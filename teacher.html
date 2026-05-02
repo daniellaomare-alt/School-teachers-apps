@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SchoolTrack — Teacher Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="dashboard">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <div class="sidebar-logo-icon">🏫</div>
+          <div>
+            <div class="sidebar-logo-text">SchoolTrack</div>
+            <div class="sidebar-logo-sub">Teacher Portal</div>
+          </div>
+        </div>
+      </div>
+      <div class="sidebar-user">
+        <div class="sidebar-user-avatar" id="sidebarAvatar">T</div>
+        <div class="sidebar-user-name" id="sidebarName">Loading...</div>
+        <div class="sidebar-user-role" id="sidebarClass">—</div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Main</div>
+        <div class="nav-item active" onclick="showSection('overview')">
+          <span class="nav-icon">🏠</span> Overview
+        </div>
+        <div class="nav-item" onclick="showSection('students')">
+          <span class="nav-icon">👥</span> My Students
+        </div>
+        <div class="nav-item" onclick="showSection('lesson-notes')">
+          <span class="nav-icon">📖</span> Lesson Notes
+          <span class="nav-badge" id="notesBadge" style="display:none">0</span>
+        </div>
+        <div class="nav-item" onclick="showSection('updates')">
+          <span class="nav-icon">📢</span> Updates
+          <span class="nav-badge" id="updatesBadge" style="display:none">0</span>
+        </div>
+        <div class="nav-section-title">Account</div>
+        <div class="nav-item" onclick="showSection('profile')">
+          <span class="nav-icon">⚙️</span> My Profile
+        </div>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="btn btn-outline" style="width:100%;justify-content:center" onclick="logout()">
+          🚪 Logout
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main-content">
+
+      <!-- OVERVIEW -->
+      <section id="section-overview" class="section active">
+        <div class="page-header">
+          <h2 id="welcomeMsg">Welcome back!</h2>
+          <p>Here's a summary of your class and activities.</p>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon blue">👥</div>
+            <div class="stat-value" id="statStudents">0</div>
+            <div class="stat-label">Students in My Class</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon gold">📖</div>
+            <div class="stat-value" id="statNotes">0</div>
+            <div class="stat-label">Lesson Notes Received</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon green">📢</div>
+            <div class="stat-value" id="statUpdates">0</div>
+            <div class="stat-label">School Updates</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">📖 Recent Lesson Notes</span>
+            <button class="btn btn-outline btn-sm" onclick="showSection('lesson-notes')">View All</button>
+          </div>
+          <div id="recentNotes" class="notes-list"></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">📢 Recent Updates</span>
+            <button class="btn btn-outline btn-sm" onclick="showSection('updates')">View All</button>
+          </div>
+          <div id="recentUpdates" class="notes-list"></div>
+        </div>
+      </section>
+
+      <!-- STUDENTS -->
+      <section id="section-students" class="section">
+        <div class="page-header">
+          <h2>My Students</h2>
+          <p>Manage and view student profiles in your class.</p>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Student Profiles</span>
+            <button class="btn btn-gold btn-sm" onclick="openAddStudentModal()">+ Add Student</button>
+          </div>
+          <div class="search-bar">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="studentSearch" placeholder="Search students..." oninput="renderStudents()" />
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Student</th>
+                  <th>Admission No.</th>
+                  <th>Age</th>
+                  <th>Gender</th>
+                  <th>Parent/Guardian</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="studentsTableBody"></tbody>
+            </table>
+          </div>
+          <div id="studentsEmpty" class="empty-state" style="display:none">
+            <div class="empty-icon">👥</div>
+            <p>No students yet. Click "Add Student" to get started.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- LESSON NOTES -->
+      <section id="section-lesson-notes" class="section">
+        <div class="page-header">
+          <h2>Lesson Notes</h2>
+          <p>Notes sent to you by the school admin for your class.</p>
+        </div>
+        <div id="lessonNotesList" class="notes-list"></div>
+        <div id="notesEmpty" class="empty-state" style="display:none">
+          <div class="empty-icon">📖</div>
+          <p>No lesson notes yet. The admin will send notes here.</p>
+        </div>
+      </section>
+
+      <!-- UPDATES -->
+      <section id="section-updates" class="section">
+        <div class="page-header">
+          <h2>School Updates</h2>
+          <p>General announcements and news from the admin.</p>
+        </div>
+        <div id="updatesList" class="notes-list"></div>
+        <div id="updatesEmpty" class="empty-state" style="display:none">
+          <div class="empty-icon">📢</div>
+          <p>No updates yet.</p>
+        </div>
+      </section>
+
+      <!-- PROFILE -->
+      <section id="section-profile" class="section">
+        <div class="page-header">
+          <h2>My Profile</h2>
+          <p>View and update your account information.</p>
+        </div>
+        <div class="card" style="max-width:560px">
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" id="profileName" />
+          </div>
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="profileEmail" />
+          </div>
+          <div class="form-group">
+            <label>Subject</label>
+            <input type="text" id="profileSubject" />
+          </div>
+          <div class="form-group">
+            <label>Class</label>
+            <input type="text" id="profileClass" />
+          </div>
+          <div class="form-group">
+            <label>Phone Number</label>
+            <input type="text" id="profilePhone" />
+          </div>
+          <div class="form-group">
+            <label>New Password (leave blank to keep current)</label>
+            <input type="password" id="profilePassword" placeholder="New password..." />
+          </div>
+          <button class="btn btn-primary" style="width:auto" onclick="saveProfile()">💾 Save Changes</button>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Add / Edit Student Modal -->
+  <div class="modal-overlay" id="studentModal">
+    <div class="modal">
+      <h3 id="studentModalTitle">Add New Student</h3>
+      <p class="modal-sub">Fill in the student's details below.</p>
+      <input type="hidden" id="editStudentId" />
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="sName" placeholder="e.g. Chidi Obi" />
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="form-group">
+          <label>Age</label>
+          <input type="number" id="sAge" placeholder="11" min="5" max="20" />
+        </div>
+        <div class="form-group">
+          <label>Gender</label>
+          <select id="sGender">
+            <option value="">Select...</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Admission Number</label>
+        <input type="text" id="sAdmission" placeholder="ADM/2024/001" />
+      </div>
+      <div class="form-group">
+        <label>Home Address</label>
+        <input type="text" id="sAddress" placeholder="e.g. 12 Lagos Street" />
+      </div>
+      <div class="form-group">
+        <label>Parent / Guardian Name</label>
+        <input type="text" id="sParentName" placeholder="e.g. Mr. Obi" />
+      </div>
+      <div class="form-group">
+        <label>Parent Phone Number</label>
+        <input type="text" id="sParentPhone" placeholder="e.g. 08012345678" />
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-outline" onclick="closeModal('studentModal')">Cancel</button>
+        <button class="btn btn-primary" style="width:auto" onclick="saveStudent()">Save Student</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- View Student Modal -->
+  <div class="modal-overlay" id="viewStudentModal">
+    <div class="modal">
+      <h3 id="viewStudentName">Student Profile</h3>
+      <p class="modal-sub" id="viewStudentClass">—</p>
+      <div id="viewStudentBody" style="font-size:14px;line-height:2;color:var(--gray-600)"></div>
+      <div class="modal-actions">
+        <button class="btn btn-outline" onclick="closeModal('viewStudentModal')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="teacher.js"></script>
+</body>
+</html>

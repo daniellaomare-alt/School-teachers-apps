@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SchoolTrack — Admin Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="dashboard">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <div class="sidebar-logo-icon">🏫</div>
+          <div>
+            <div class="sidebar-logo-text">SchoolTrack</div>
+            <div class="sidebar-logo-sub">Admin Panel</div>
+          </div>
+        </div>
+      </div>
+      <div class="sidebar-user">
+        <div class="sidebar-user-avatar">🛡️</div>
+        <div class="sidebar-user-name">Administrator</div>
+        <div class="sidebar-user-role">Full Access</div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Main</div>
+        <div class="nav-item active" onclick="showSection('overview')">
+          <span class="nav-icon">🏠</span> Overview
+        </div>
+        <div class="nav-item" onclick="showSection('teachers')">
+          <span class="nav-icon">👩‍🏫</span> Teachers
+        </div>
+        <div class="nav-item" onclick="showSection('students')">
+          <span class="nav-icon">👥</span> All Students
+        </div>
+        <div class="nav-section-title">Communication</div>
+        <div class="nav-item" onclick="showSection('lesson-notes')">
+          <span class="nav-icon">📖</span> Lesson Notes
+        </div>
+        <div class="nav-item" onclick="showSection('updates')">
+          <span class="nav-icon">📢</span> Send Updates
+        </div>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="btn btn-outline" style="width:100%;justify-content:center" onclick="logout()">
+          🚪 Logout
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main-content">
+
+      <!-- OVERVIEW -->
+      <section id="section-overview" class="section active">
+        <div class="page-header">
+          <h2>Admin Dashboard</h2>
+          <p>Manage your school — teachers, students, notes, and announcements.</p>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon blue">👩‍🏫</div>
+            <div class="stat-value" id="statTeachers">0</div>
+            <div class="stat-label">Total Teachers</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon gold">👥</div>
+            <div class="stat-value" id="statStudents">0</div>
+            <div class="stat-label">Total Students</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon green">📖</div>
+            <div class="stat-value" id="statNotes">0</div>
+            <div class="stat-label">Lesson Notes Sent</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon red">📢</div>
+            <div class="stat-value" id="statUpdates">0</div>
+            <div class="stat-label">Updates Posted</div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px">
+          <div class="card">
+            <div class="card-header"><span class="card-title">👩‍🏫 Teachers</span><button class="btn btn-outline btn-sm" onclick="showSection('teachers')">View All</button></div>
+            <div id="overviewTeachers"></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">📢 Recent Updates</span><button class="btn btn-outline btn-sm" onclick="showSection('updates')">View All</button></div>
+            <div id="overviewUpdates" class="notes-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TEACHERS -->
+      <section id="section-teachers" class="section">
+        <div class="page-header">
+          <h2>Teachers</h2>
+          <p>Manage teacher accounts and their class assignments.</p>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">All Teachers</span>
+            <button class="btn btn-gold btn-sm" onclick="openAddTeacherModal()">+ Add Teacher</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Teacher</th>
+                  <th>Subject</th>
+                  <th>Class</th>
+                  <th>Students</th>
+                  <th>Contact</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="teachersTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ALL STUDENTS -->
+      <section id="section-students" class="section">
+        <div class="page-header">
+          <h2>All Students</h2>
+          <p>View every student registered across all classes.</p>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Student Registry</span>
+            <span class="badge badge-blue" id="totalStudentCount">0 students</span>
+          </div>
+          <div class="search-bar">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="adminStudentSearch" placeholder="Search by name, class, or admission no." oninput="renderAllStudents()" />
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Student</th>
+                  <th>Class</th>
+                  <th>Admission No.</th>
+                  <th>Age/Gender</th>
+                  <th>Teacher</th>
+                  <th>Parent Phone</th>
+                </tr>
+              </thead>
+              <tbody id="allStudentsTableBody"></tbody>
+            </table>
+          </div>
+          <div id="allStudentsEmpty" class="empty-state" style="display:none">
+            <div class="empty-icon">👥</div>
+            <p>No students found.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- LESSON NOTES -->
+      <section id="section-lesson-notes" class="section">
+        <div class="page-header">
+          <h2>Lesson Notes</h2>
+          <p>Send lesson notes directly to a teacher's dashboard.</p>
+        </div>
+
+        <div class="card" style="max-width:640px">
+          <div class="card-header"><span class="card-title">✍️ Send a New Lesson Note</span></div>
+          <div class="form-group">
+            <label>Note Title</label>
+            <input type="text" id="noteTitle" placeholder="e.g. Introduction to Algebra" />
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+            <div class="form-group">
+              <label>Subject</label>
+              <input type="text" id="noteSubject" placeholder="e.g. Mathematics" />
+            </div>
+            <div class="form-group">
+              <label>Send To (Teacher)</label>
+              <select id="noteTeacher">
+                <option value="">Select teacher...</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Note Content</label>
+            <textarea id="noteContent" placeholder="Write the lesson note content here..."></textarea>
+          </div>
+          <button class="btn btn-gold" onclick="sendLessonNote()">📤 Send Lesson Note</button>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><span class="card-title">📋 Sent Lesson Notes</span></div>
+          <div id="adminNotesList" class="notes-list"></div>
+          <div id="adminNotesEmpty" class="empty-state" style="display:none">
+            <div class="empty-icon">📖</div>
+            <p>No lesson notes sent yet.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- UPDATES -->
+      <section id="section-updates" class="section">
+        <div class="page-header">
+          <h2>School Updates</h2>
+          <p>Post announcements visible to all teachers.</p>
+        </div>
+
+        <div class="card" style="max-width:640px">
+          <div class="card-header"><span class="card-title">📝 Post a New Update</span></div>
+          <div class="form-group">
+            <label>Update Title</label>
+            <input type="text" id="updateTitle" placeholder="e.g. End of Term Examination Schedule" />
+          </div>
+          <div class="form-group">
+            <label>Message</label>
+            <textarea id="updateContent" placeholder="Write your announcement here..." style="min-height:120px"></textarea>
+          </div>
+          <button class="btn btn-primary" onclick="sendUpdate()">📢 Post Update</button>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><span class="card-title">📋 Posted Updates</span></div>
+          <div id="adminUpdatesList" class="notes-list"></div>
+          <div id="adminUpdatesEmpty" class="empty-state" style="display:none">
+            <div class="empty-icon">📢</div>
+            <p>No updates posted yet.</p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Add/Edit Teacher Modal -->
+  <div class="modal-overlay" id="teacherModal">
+    <div class="modal">
+      <h3 id="teacherModalTitle">Add New Teacher</h3>
+      <p class="modal-sub">Fill in the teacher's details below.</p>
+      <input type="hidden" id="editTeacherId" />
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="tName" placeholder="e.g. Mrs. Adaobi Okafor" />
+      </div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="tEmail" placeholder="e.g. adaobi@school.com" />
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="tPassword" placeholder="Create a password" />
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="form-group">
+          <label>Subject</label>
+          <input type="text" id="tSubject" placeholder="e.g. Mathematics" />
+        </div>
+        <div class="form-group">
+          <label>Class</label>
+          <input type="text" id="tClass" placeholder="e.g. JSS 1A" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Phone Number</label>
+        <input type="text" id="tPhone" placeholder="e.g. 08012345678" />
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-outline" onclick="closeModal('teacherModal')">Cancel</button>
+        <button class="btn btn-primary" style="width:auto" onclick="saveTeacher()">Save Teacher</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>
